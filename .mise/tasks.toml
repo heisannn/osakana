@@ -1,0 +1,8 @@
+[tools]
+"node" = "22"
+"rust" = [
+  { version = "stable", components = "rust-src,llvm-tools,rust-analyzer" },
+]
+
+[task_config]
+includes = [".mise/tasks.toml"]
