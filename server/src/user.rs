@@ -36,13 +36,19 @@ impl User {
 
 #[cfg(test)]
 mod test {
-    use crate::model::User;
+    use super::User;
 
     #[test]
     fn user_get_id() {
         let user = User::new("0");
 
         assert_eq!(user.id, String::from("0"));
+    }
+
+    #[test]
+    fn user_get_name() {
+        let user = User::new("0");
+
         assert_eq!(user.username(), None);
 
         let mut user = user;
