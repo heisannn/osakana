@@ -1,13 +1,19 @@
 "use server";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export async function registerUser(uuid: string) {
-  if (!uuid) {
-    throw new Error("uuid is required");
+export async function registerUser(formData: FormData) {
+  const name = formData.get("input") as string;
+  if (!name) {
+    throw new Error("Name is required");
   }
 
   const cookieStore = await cookies();
+
+  // ToDo : Httpリクエスト
+  // レスポンスからUUIDを取得する想定
+  const uuid = "response dummy";
 
   cookieStore.set("user_id", uuid, {
     httpOnly: true,
@@ -15,7 +21,8 @@ export async function registerUser(uuid: string) {
     maxAge: 60 * 3,
   });
 
-  console.log(`Registered User: ${uuid}`);
+  console.log(`Registered User: ${name}, ${uuid}`);
+  redirect("/mobile");
 }
 
 export async function saveDataToCookie(formData: FormData) {

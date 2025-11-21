@@ -10,19 +10,12 @@ type PageProps = {
 async function sendDataToServer(combinedData: any) {
   console.log("SendData:", combinedData);
 
-  /*
-  const response = await fetch("https://api.example.com/endpoint", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(combinedData),
-  });
-  */
-
-  // dummy response for testing
+  // ToDo : Httpリクエスト
+  // レスポンスのモック
+  // 50%の確率でisCorrectがtrueになるようにする
+  // comboは固定で10にする
   const response = new Response(
-    JSON.stringify({ result: { isCorrect: Math.random() < 0.5 } }),
+    JSON.stringify({ result: { isCorrect: Math.random() < 0.5, combo: 10 } }),
     {
       status: 200,
     },
@@ -59,5 +52,6 @@ export default async function ProcessPage({ searchParams }: PageProps) {
 
   console.log("[サーバー] 処理完了。メインページにリダイレクトします。");
   const isCorrect = apiResponse.result?.isCorrect ?? false;
-  redirect(`/mobile/?result=${isCorrect}`);
+  const combo = apiResponse.result?.combo ?? 0;
+  redirect(`/mobile/?result=${isCorrect},combo=${combo}`);
 }

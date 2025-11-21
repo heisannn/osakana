@@ -59,7 +59,7 @@ export function InputForm({ onSubmitAction, buttonText }: InputFormProps) {
         disabled={loading}
         style={{ padding: "10px", cursor: "pointer" }}
       >
-        {loading ? "保存中..." : "保存してNFCスキャン準備"}
+        {loading ? "保存中..." : "確定"}
       </button>
       {message && (
         <p style={{ color: loading ? "blue" : "green" }}>{message}</p>
