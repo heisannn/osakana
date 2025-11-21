@@ -47,11 +47,9 @@ mod test {
 
     #[test]
     fn user_get_name() {
-        let user = User::new("0");
+        let mut user = User::new("0");
 
         assert_eq!(user.username(), None);
-
-        let mut user = user;
 
         user.set_username("test_user");
 
