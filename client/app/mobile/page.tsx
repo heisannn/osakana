@@ -22,11 +22,11 @@ async function StatusMessage({ searchParams }: PageProps) {
 
 export default async function Mobile() {
   return (
-    <AuthGuard>
-      <div>
-        <StatusMessage searchParams={Promise.resolve({} as SearchParams)} />
-        <InputForm onSubmitAction={saveDataToCookie} buttonText="数字を入力" />
-      </div>
-    </AuthGuard>
+    //<AuthGuard>
+    <div>
+      <StatusMessage searchParams={Promise.resolve({} as SearchParams)} />
+      <InputForm onSubmitAction={saveDataToCookie} buttonText="数字を入力" />
+    </div>
+    //</AuthGuard>
   );
 }
