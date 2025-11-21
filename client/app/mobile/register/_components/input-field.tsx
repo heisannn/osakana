@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { registerUser } from "../../actions";
+import { postUserNameToServer } from "../../actions";
 
 export function NameInputField() {
   const [name, setName] = useState("");
@@ -15,8 +15,7 @@ export function NameInputField() {
     const formData = new FormData(event.currentTarget);
 
     try {
-      await registerUser(formData);
-      // 成功した場合
+      await postUserNameToServer(formData);
       setSuccess(true);
       setLoading(false);
     } catch (error) {
@@ -56,6 +55,3 @@ export function NameInputField() {
     </form>
   );
 }
-
-
-

@@ -1,8 +1,7 @@
 import { SearchParams } from "nuqs/server";
 import { loadSearchParams } from "./request/search-params";
 import { InputForm } from "./_components/InputForm";
-import { AuthGuard } from "./_components/AuthGuard";
-import { saveDataToCookie } from "./actions";
+import { saveNumberToCookie } from "./actions";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
@@ -20,13 +19,12 @@ async function StatusMessage({ searchParams }: PageProps) {
   return null;
 }
 
-export default async function Mobile() {
+export default async function Mobile({ searchParams }: PageProps) {
+  const { combo } = await loadSearchParams(searchParams);
   return (
-    <AuthGuard>
-      <div>
-        <StatusMessage searchParams={Promise.resolve({} as SearchParams)} />
-        <InputForm onSubmitAction={saveDataToCookie} buttonText="数字を入力" />
-      </div>
-    </AuthGuard>
+    <div>
+      <StatusMessage searchParams={Promise.resolve({} as SearchParams)} />
+      <InputForm onSubmitAction={saveNumberToCookie} buttonText="数字を入力" />
+    </div>
   );
 }

@@ -1,4 +1,5 @@
-import { cookies } from "next/headers";
+"use client";
+
 import { redirect } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -6,10 +7,10 @@ type AuthGuardProps = {
   children: ReactNode;
 };
 
-export async function AuthGuard({ children }: AuthGuardProps) {
-  const cookieStore = await cookies();
-  const uuid = cookieStore.get("user_id");
-
+export async function AuthGuard(
+  { children }: AuthGuardProps,
+  { uuid }: { uuid?: string },
+) {
   if (!uuid) {
     redirect("/mobile/register");
   }
