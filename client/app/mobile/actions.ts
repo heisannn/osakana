@@ -22,7 +22,6 @@ export async function registerUser(formData: FormData) {
   });
 
   console.log(`Registered User: ${name}, ${uuid}`);
-  redirect("/mobile");
 }
 
 export async function saveDataToCookie(formData: FormData) {

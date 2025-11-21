@@ -1,11 +1,13 @@
 import { cookies } from "next/headers";
-import { InputForm } from "../_components/InputForm";
-import { registerUser } from "../actions";
+import { NameInputField } from "./_components/input-field";
 
 export default async function Mobile() {
+  const cookieStore = await cookies();
+  const user_uuid = cookieStore.get("user_uuid");
+
   return (
     <div>
-      <InputForm onSubmitAction={registerUser} buttonText="名前を入力" />
+      <NameInputField />
     </div>
   );
 }
