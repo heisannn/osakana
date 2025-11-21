@@ -42,7 +42,7 @@ mod test {
     fn user_get_id() {
         let user = User::new("0");
 
-        assert_eq!(user.id, String::from("0"));
+        assert_eq!(user.id(), "0");
     }
 
     #[test]
