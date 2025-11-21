@@ -36,7 +36,11 @@ impl Questions {
     }
 
     pub fn reset(&mut self) {
-        self.current = self.all.sample(&mut rand::rng(), 10).cloned().collect();
+        self.current = self
+            .all
+            .choose_multiple(&mut rand::rng(), 10)
+            .cloned()
+            .collect();
     }
 
     pub fn decrease_remaining_time(&mut self, duration: Duration) {
