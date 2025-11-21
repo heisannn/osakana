@@ -1,24 +1,32 @@
-import Kanji from "../_components/ui/kanji";
-export default function Mobile() {
+import { SearchParams } from "nuqs/server";
+import { loadSearchParams } from "./request/search-params";
+import { InputForm } from "./_components/InputForm";
+import { AuthGuard } from "./_components/AuthGuard";
+import { saveDataToCookie } from "./actions";
+
+type PageProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+async function StatusMessage({ searchParams }: PageProps) {
+  const { error } = await loadSearchParams(searchParams);
+  if (error) {
+    return (
+      <p style={{ color: "red", border: "1px solid red", padding: "1rem" }}>
+        {error}
+      </p>
+    );
+  }
+  return null;
+}
+
+export default async function Mobile() {
   return (
-    <div>
-      <div className="flex flex-wrap">
-        <Kanji
-          questionnum={1}
-          answerkanji="鮪"
-          yomikanji="まぐろ"
-          description="寿司や刺身で大人気な、大型の赤身魚。"
-          isCorrect={true}
-        />
-        <Kanji
-          questionnum={2}
-          answerkanji="鰯"
-          yomikanji="いわし"
-          description="安くて栄養満点、食卓の定番である青魚。"
-          isCorrect={false} />
+    <AuthGuard>
+      <div>
+        <StatusMessage searchParams={Promise.resolve({} as SearchParams)} />
+        <InputForm onSubmitAction={saveDataToCookie} buttonText="数字を入力" />
       </div>
-
-    </div>
-  )
-
+    </AuthGuard>
+  );
 }
