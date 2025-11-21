@@ -1,10 +1,7 @@
-use std::sync::Arc;
-
 use axum::{Json, extract::State, http::StatusCode};
 use serde::{Deserialize, Serialize};
-use tokio::sync::Mutex;
 
-use crate::GameState;
+use crate::SharedGameState;
 
 #[derive(Debug, Deserialize)]
 pub struct ReceiveAnswerRequest {
@@ -19,7 +16,7 @@ pub struct Response {
 
 #[axum::debug_handler]
 pub async fn receive_answer(
-    State(game_state): State<Arc<Mutex<GameState>>>,
+    State(game_state): State<SharedGameState>,
     Json(request): Json<ReceiveAnswerRequest>,
 ) -> Result<Json<Response>, StatusCode> {
     let question_index = request.question_index;

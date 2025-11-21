@@ -12,7 +12,9 @@ mod error;
 mod model;
 
 use crate::{
-    domain::{mobile::receive_answer, screen::handle_screen},
+    domain::{
+        mobile::receive_answer, ranking::register_ranking, screen::handle_screen, user::create_user,
+    },
     model::{Kanji, User},
 };
 
@@ -28,6 +30,7 @@ pub struct GameState {
     all_questions: Vec<Question>,
     current_questions: Vec<Question>,
     participants: Vec<User>,
+    ranking: Vec<User>,
 }
 
 pub type SharedGameState = Arc<Mutex<GameState>>;
@@ -51,7 +54,9 @@ async fn main() {
     let app_state = Arc::new(Mutex::new(app_state));
 
     let app = Router::new()
-        .route("/", post(receive_answer))
+        .route("/register_ranking", post(register_ranking))
+        .route("/user", post(create_user))
+        .route("/answer", post(receive_answer))
         .route("/websocket", get(websocket_handler))
         .with_state(app_state);
 
