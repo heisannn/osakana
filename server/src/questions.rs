@@ -4,7 +4,7 @@ use std::time::Duration;
 
 use crate::kanji::Kanji;
 
-const TOTAL_TIME: Duration = Duration::from_secs(60);
+const TOTAL_TIME: Duration = Duration::from_secs(30);
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Question {
