@@ -1,7 +1,7 @@
 use axum::{extract::State, http::StatusCode};
 use uuid::Uuid;
 
-use crate::{SharedGameState, model::User};
+use crate::{SharedGameState, user::User};
 
 #[axum::debug_handler]
 pub async fn create_user(State(game_state): State<SharedGameState>) -> StatusCode {

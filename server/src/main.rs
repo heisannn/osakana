@@ -48,7 +48,8 @@ async fn main() {
     let app_state = GameState::new();
     let app_state = Arc::new(Mutex::new(app_state));
 
-    tokio::spawn(update_question_remaining_time(app_state));
+    let app_state_cloned = Arc::clone(&app_state);
+    tokio::spawn(update_question_remaining_time(app_state_cloned));
 
     let app = Router::new()
         .route("/register_ranking", post(register_ranking))

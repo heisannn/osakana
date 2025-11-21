@@ -11,7 +11,7 @@ pub async fn handle_screen(
 ) -> Result<(), OsakanaError> {
     let game_state = game_state.lock().await;
 
-    let request = serde_json::to_string(&game_state.current_questions).map_err(SerializeError)?;
+    let request = serde_json::to_string(&game_state.questions.current()).map_err(SerializeError)?;
 
     stream
         .send(ws::Message::text(request))
