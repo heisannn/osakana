@@ -3,6 +3,7 @@ import { loadSearchParams } from "./request/search-params";
 import { InputForm } from "./_components/InputForm";
 import { AuthGuard } from "./_components/AuthGuard";
 import { saveDataToCookie } from "./actions";
+import DisplayCombo from "./DisplayCombo/components/DisplayCombo";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
