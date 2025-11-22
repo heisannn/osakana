@@ -16,14 +16,8 @@ export async function registerRanking(formData: FormData) {
     throw new Error("User ID cookie is missing");
   }
 
-  const authUrl = process.env.REGISTER_RANKING_API_URL;
-  if (!authUrl) {
-    console.error("Environment variable USER_AUTH_API_URL is not defined");
-    redirect("/mobile/?error=server_config_error");
-  }
-
   try {
-    const res = await fetch(authUrl, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/ranking`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,13 +53,7 @@ export async function sendAnswerToServer(unicode: string) {
   };
   console.log("SendData:", combinedData);
 
-  const authUrl = process.env.SEND_ANSWER_API_URL;
-  if (!authUrl) {
-    console.error("Environment variable USER_AUTH_API_URL is not defined");
-    redirect("/mobile/?error=server_config_error");
-  }
-
-  const res = await fetch(authUrl, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/answer`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

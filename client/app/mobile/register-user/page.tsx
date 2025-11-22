@@ -5,15 +5,8 @@ export default async function RegisterUser() {
   const cookieStore = await cookies();
   let user_id = null;
 
-  const authUrl = process.env.REGISTER_USER_API_URL;
-
-  if (!authUrl) {
-    console.error("Environment variable USER_AUTH_API_URL is not defined");
-    redirect("/mobile/?error=server_config_error");
-  }
-
   try {
-    const res = await fetch(authUrl, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

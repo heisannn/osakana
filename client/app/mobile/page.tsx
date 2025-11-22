@@ -1,9 +1,9 @@
-import { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "./request/search-params";
-import { InputForm } from "./_components/InputForm";
-import { saveIndexToCookie } from "./actions";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import type { SearchParams } from "nuqs/server";
+import { InputForm } from "./_components/InputForm";
+import { saveIndexToCookie } from "./actions";
+import { loadSearchParams } from "./request/search-params";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
