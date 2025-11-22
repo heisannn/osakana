@@ -48,7 +48,7 @@ export async function sendAnswerToServer(unicode: string) {
   const combinedData = {
     kanji_unicode: unicode,
     user_id: userIDCookie.value,
-    question_index: questionIndexCookie.value,
+    question_index: parseInt(questionIndexCookie.value, 10) - 1,
   };
   console.log("SendData:", combinedData);
 
