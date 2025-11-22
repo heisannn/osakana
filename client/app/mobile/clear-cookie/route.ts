@@ -6,5 +6,11 @@ export async function GET() {
   cookieStore.delete("user_id");
   cookieStore.delete("question_index");
 
+  cookieStore.set("question_index", "1", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 120,
+  });
+
   redirect("/mobile");
 }

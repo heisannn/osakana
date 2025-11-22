@@ -33,6 +33,12 @@ export async function GET() {
     maxAge: 60 * 60 * 24,
   });
 
+  cookieStore.set("question_index", "1", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 60 * 120,
+  });
+
   if (!cookieStore.get("user_id")) {
     console.error("Failed to set user_id cookie");
     throw new Error("Failed to set cookie");
