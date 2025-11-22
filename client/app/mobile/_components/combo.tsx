@@ -1,15 +1,13 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import styles from './DisplayCombo.module.css';
+import { useEffect, useState } from "react";
+import styles from "./combo.module.css";
 
-interface DisplayComboProps {
-  combo: number;
-}
-
-const DisplayCombo: React.FC<DisplayComboProps> = ({ combo }) => {
+export function Combo(props: { combo: number }) {
   const [prevCombo, setPrevCombo] = useState(0);
   const [animate, setAnimate] = useState(false);
+
+  const { combo } = props;
 
   useEffect(() => {
     if (combo > prevCombo) {
@@ -26,14 +24,14 @@ const DisplayCombo: React.FC<DisplayComboProps> = ({ combo }) => {
 
   return (
     <div className={styles.container}>
-      <span className={`${styles.comboNumber} ${animate ? styles.animate : ''}`}>
+      <span
+        className={`${styles.comboNumber} ${animate ? styles.animate : ""}`}
+      >
         {combo}
       </span>
-      <span className={`${styles.comboText} ${animate ? styles.animate : ''}`}>
+      <span className={`${styles.comboText} ${animate ? styles.animate : ""}`}>
         COMBO
       </span>
     </div>
   );
-};
-
-export default DisplayCombo;
+}

@@ -1,9 +1,8 @@
-import { SearchParams } from "nuqs/server";
-import { loadSearchParams } from "./request/search-params";
-import { InputForm } from "./_components/InputForm";
+import type { SearchParams } from "nuqs/server";
 import { AuthGuard } from "./_components/AuthGuard";
+import { InputForm } from "./_components/InputForm";
 import { saveDataToCookie } from "./actions";
-import DisplayCombo from "./DisplayCombo/components/DisplayCombo";
+import { loadSearchParams } from "./request/search-params";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
