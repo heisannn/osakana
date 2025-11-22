@@ -13,6 +13,7 @@ use std::{
     time::Duration,
 };
 use tokio::{
+    signal,
     sync::{Mutex, broadcast},
     time::interval,
 };
@@ -59,7 +60,9 @@ static KANJIS: OnceLock<Vec<Kanji>> = OnceLock::new();
 
 #[tokio::main]
 async fn main() {
-    dotenvy::dotenv().expect("failed to load .env");
+    if let Err(err) = dotenvy::dotenv() {
+        tracing::warn!("Failed to load .env (continuing without it): {}", err);
+    }
 
     tracing_subscriber::registry()
         .with(
@@ -78,12 +81,19 @@ async fn main() {
     let game_state_cloned = Arc::clone(&game_state);
     tokio::spawn(update_question_remaining_time(game_state_cloned));
 
+    let frontend_url = match env::var("FRONTEND_URL") {
+        Ok(url) => url,
+        Err(_) => {
+            tracing::error!("Environment variable FRONTEND_URL is not set. Exiting.");
+            std::process::exit(1);
+        }
+    };
+
     let cors = CorsLayer::new()
         .allow_origin(AllowOrigin::exact(
-            env::var("FRONTEND_URL")
-                .expect("FRONTEND_URL not found")
+            frontend_url
                 .parse()
-                .unwrap(),
+                .expect("FRONTEND_URL is set but invalid as an origin"),
         ))
         .allow_methods(vec![Method::GET, Method::POST, Method::PUT, Method::DELETE])
         .allow_headers(vec![
@@ -105,7 +115,10 @@ async fn main() {
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
     tracing::info!("listening on {}", listener.local_addr().unwrap());
 
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
 }
 
 async fn sse_handler(
@@ -153,5 +166,29 @@ async fn update_question_remaining_time(game_state: SharedGameState) {
         }) {
             tracing::error!("Failed to send SseEvent: {error}");
         }
+    }
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
     }
 }
