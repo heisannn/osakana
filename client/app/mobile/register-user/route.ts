@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function RegisterUser() {
+export async function GET() {
   const cookieStore = await cookies();
   let user_id = null;
 
@@ -24,11 +24,7 @@ export default async function RegisterUser() {
   }
 
   if (!user_id) {
-    return (
-      <div>
-        <h1>Error Registering User</h1>
-      </div>
-    );
+    console.error("Failed to retrieve user_id from API");
   }
 
   cookieStore.set("user_id", user_id, {
