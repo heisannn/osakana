@@ -1,7 +1,7 @@
 import { parseAsString, parseAsInteger, createLoader } from "nuqs/server";
 
 export const searchParams = {
-  nfcId: parseAsString.withDefault(""),
+  unicode: parseAsString.withDefault(""),
   result: parseAsString.withDefault(""),
   error: parseAsString.withDefault(""),
   combo: parseAsInteger.withDefault(0),
