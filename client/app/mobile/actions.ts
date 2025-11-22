@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 
 export async function registerRanking(formData: FormData) {
   const name = formData.get("input") as string;
-
   if (!name) {
     throw new Error("Name is required");
   }
@@ -76,7 +75,6 @@ export async function saveIndexToCookie(formData: FormData) {
   }
 
   const cookieStore = await cookies();
-
   cookieStore.set("question_index", number, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",

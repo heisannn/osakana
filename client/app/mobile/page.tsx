@@ -1,9 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import type { SearchParams } from "nuqs/server";
-import { InputForm } from "./_components/InputForm";
-import { saveIndexToCookie } from "./actions";
 import { loadSearchParams } from "./request/search-params";
+import { Keypad } from "./_components/Keypad";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
@@ -20,7 +19,6 @@ async function StatusMessage({ searchParams }: PageProps) {
   }
   return null;
 }
-
 export default async function Mobile({ searchParams }: PageProps) {
   const { combo } = await loadSearchParams(searchParams);
 
@@ -33,7 +31,7 @@ export default async function Mobile({ searchParams }: PageProps) {
   return (
     <div>
       <StatusMessage searchParams={searchParams} />
-      <InputForm onSubmitAction={saveIndexToCookie} buttonText="数字を入力" />
+      <Keypad />
     </div>
   );
 }
