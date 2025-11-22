@@ -39,6 +39,8 @@ impl GameState {
 
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().expect("failed to load .env");
+
     let app_state = GameState::new();
     let app_state = Arc::new(Mutex::new(app_state));
 
