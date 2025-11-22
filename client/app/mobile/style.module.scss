@@ -1,0 +1,44 @@
+.container {
+  min-height: 100dvh;
+  width: 100%;
+  padding: 1rem;
+
+  background-image: url('./sushi-board.jpg');
+
+  // 画像の表示方法
+  // 'cover': 画像を引き伸ばして画面全体を埋める（推奨）
+  // 'repeat': 継ぎ目のないパターン画像（テクスチャ）の場合はこちらを使う
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  // 画像読み込み前のフォールバック色（白木っぽい色）
+  background-color: #f0e2c6;
+
+  // --- レイアウトと文字 ---
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  // 木の板の上でも読みやすい文字色（焦げ茶色など）
+  color: #3d2b1f;
+}
+
+// エラーメッセージ等が出たときに背景に負けないようにするスタイル
+.error {
+  color: #d32f2f;
+  background-color: rgba(255, 255, 255, 0.85); // 半透明の白背景
+  border: 1px solid #d32f2f;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
