@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 export async function GET() {
   const cookieStore = await cookies();
   cookieStore.delete("user_id");
-  cookieStore.delete("answer_number");
+  cookieStore.delete("question_index");
 
-  redirect("/mobile?error=cookies_cleared");
+  redirect("/mobile");
 }

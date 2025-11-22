@@ -1,9 +1,9 @@
 import { SearchParams } from "nuqs/server";
 import { loadSearchParams } from "./request/search-params";
 import { InputForm } from "./_components/InputForm";
-import { saveNumberToCookie } from "./actions";
+import { saveIndexToCookie } from "./actions";
 import { cookies } from "next/headers";
-import { UserRegistrar } from "./_components/UserRegister";
+import { redirect } from "next/navigation";
 
 type PageProps = {
   searchParams: Promise<SearchParams>;
@@ -27,13 +27,13 @@ export default async function Mobile({ searchParams }: PageProps) {
   const cookieStore = await cookies();
   const userIDCookie = cookieStore.get("user_id");
   if (!userIDCookie) {
-    return <UserRegistrar />;
+    redirect("/mobile/register-user");
   }
 
   return (
     <div>
       <StatusMessage searchParams={searchParams} />
-      <InputForm onSubmitAction={saveNumberToCookie} buttonText="数字を入力" />
+      <InputForm onSubmitAction={saveIndexToCookie} buttonText="数字を入力" />
     </div>
   );
 }

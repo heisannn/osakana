@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function postUserNameToServer(formData: FormData) {
+export async function registerRanking(formData: FormData) {
   const name = formData.get("input") as string;
 
   if (!name) {
@@ -16,65 +16,71 @@ export async function postUserNameToServer(formData: FormData) {
     throw new Error("User ID cookie is missing");
   }
 
-  // ToDo : Httpリクエスト
+  const authUrl = process.env.REGISTER_RANKING_API_URL;
+  if (!authUrl) {
+    console.error("Environment variable USER_AUTH_API_URL is not defined");
+    redirect("/mobile/?error=server_config_error");
+  }
+
+  try {
+    const res = await fetch(authUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username: name, id: userId }),
+    });
+
+    if (!res.ok) {
+      console.error("Server responded with an error:", res.statusText);
+      redirect("/mobile/?error=server_error");
+    }
+  } catch (error) {
+    console.error("Fetch failed:", error);
+  }
+
   console.log(`Posted Name to Server: ${name} for User ID: ${userId}`);
 }
 
 export async function sendAnswerToServer(unicode: string) {
   const cookieStore = await cookies();
   const userIDCookie = cookieStore.get("user_id");
-  const userNumberCookie = cookieStore.get("answer_number");
+  const questionIndexCookie = cookieStore.get("question_index");
 
-  if (!userIDCookie || !userNumberCookie) {
+  if (!userIDCookie || !questionIndexCookie) {
     console.error("[サーバー] Cookieが見つかりません。");
     redirect("/mobile/?error=cookie_missing");
   }
 
   const combinedData = {
-    unicode: unicode,
-    userId: userIDCookie.value,
-    userNumber: userNumberCookie.value,
+    kanji_unicode: unicode,
+    user_id: userIDCookie.value,
+    questionIndex: questionIndexCookie.value,
   };
   console.log("SendData:", combinedData);
 
-  // ToDo : Httpリクエスト
-  // レスポンスのモック
-  // 50%の確率でisCorrectがtrueになるようにする
-  // comboは固定で10にする
-  const response = new Response(
-    JSON.stringify({ result: { isCorrect: Math.random() < 0.5, combo: 10 } }),
-    {
-      status: 200,
+  const authUrl = process.env.SEND_ANSWER_API_URL;
+  if (!authUrl) {
+    console.error("Environment variable USER_AUTH_API_URL is not defined");
+    redirect("/mobile/?error=server_config_error");
+  }
+
+  const res = await fetch(authUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
-
-  return await response.json();
-}
-
-export async function registerUser() {
-  const cookieStore = await cookies();
-
-  // ToDo : Httpリクエスト
-  // レスポンスからUUIDを取得する想定
-  const uuid = "dummy-uuid-1234";
-  if (!uuid) {
-    redirect("/mobile/?error=registration_failed");
-  }
-
-  cookieStore.set("user_id", uuid, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 3,
+    body: JSON.stringify(combinedData),
   });
-  if (!cookieStore.get("user_id")) {
-    console.error("Failed to set user_id cookie");
-    throw new Error("Failed to set cookie");
+  if (!res.ok) {
+    console.error("Server responded with an error:", res.statusText);
+    redirect("/mobile/?error=server_error");
   }
 
-  console.log(`Registered User: ${uuid}`);
+  return await res.json();
 }
 
-export async function saveNumberToCookie(formData: FormData) {
+export async function saveIndexToCookie(formData: FormData) {
   const number = formData.get("input") as string;
 
   if (!number) {
@@ -83,11 +89,11 @@ export async function saveNumberToCookie(formData: FormData) {
 
   const cookieStore = await cookies();
 
-  cookieStore.set("answer_number", number, {
+  cookieStore.set("question_index", number, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 120,
   });
 
-  console.log(`Updated Number: ${number}`);
+  console.log(`Updated Index: ${number}`);
 }
