@@ -19,12 +19,14 @@ use crate::{
     domain::{
         mobile::receive_answer, ranking::register_ranking, screen::handle_screen, user::create_user,
     },
+    kanji::{Kanji, load_kanjis},
     questions::Questions,
     user::{User, Users},
 };
 
 #[derive(Clone, Default, Debug)]
 pub struct GameState {
+    kanjis: Vec<Kanji>,
     questions: Questions,
     participants: Users,
     ranking: Vec<User>,
@@ -34,7 +36,10 @@ pub type SharedGameState = Arc<Mutex<GameState>>;
 
 impl GameState {
     fn new() -> Self {
-        GameState::default()
+        GameState {
+            kanjis: load_kanjis(),
+            ..Default::default()
+        }
     }
 }
 
@@ -104,13 +109,12 @@ async fn update_question_remaining_time(app_state: SharedGameState) {
     loop {
         interval.tick().await;
 
-        let mut state = app_state.lock().await;
-        let questions = &mut state.questions;
+        let questions = &mut app_state.lock().await.questions;
 
         questions.decrease_remaining_time(UPDATE_INTERVAL);
 
         if questions.is_remaining_time_zero() {
-            questions.reset();
+            questions.reset(&app_state.lock().await.kanjis);
             questions.reset_time();
         }
     }
