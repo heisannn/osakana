@@ -39,6 +39,8 @@ impl GameState {
 
 #[tokio::main]
 async fn main() {
+    dotenvy::dotenv().expect("failed to load .env");
+
     let app_state = GameState::new();
     let app_state = Arc::new(Mutex::new(app_state));
 
@@ -61,14 +63,14 @@ async fn main() {
         .allow_credentials(true);
 
     let app = Router::new()
-        .route("/register_ranking", post(register_ranking))
+        .route("/ranking", post(register_ranking))
         .route("/user", post(create_user))
         .route("/answer", post(receive_answer))
         .route("/websocket", get(websocket_handler))
         .layer(cors)
         .with_state(app_state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:8000").await.unwrap();
 
     axum::serve(listener, app).await.unwrap();
 }
