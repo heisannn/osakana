@@ -29,6 +29,16 @@ export default async function Mobile({ searchParams }: PageProps) {
   if (!userIDCookie) {
     redirect("/mobile/register-user");
   }
+  if (!userIDCookie?.value) {
+    console.error("User ID cookie is missing");
+    return (
+      <div>
+        <p style={{ color: "red", border: "1px solid red", padding: "1rem" }}>
+          {"userID_missing"}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div>
