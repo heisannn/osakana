@@ -3,31 +3,28 @@ use axum::{
     extract::{State, WebSocketUpgrade, ws::WebSocket},
     routing::{get, post},
 };
-use serde::Serialize;
-use std::sync::Arc;
-use tokio::sync::Mutex;
+use std::{sync::Arc, time::Duration};
+use tokio::{sync::Mutex, time::interval};
 
 mod domain;
 mod error;
-mod model;
+mod kanji;
+mod questions;
+mod user;
 
 use crate::{
-    domain::{mobile::receive_answer, screen::handle_screen},
-    model::{Kanji, User},
+    domain::{
+        mobile::receive_answer, ranking::register_ranking, screen::handle_screen, user::create_user,
+    },
+    questions::Questions,
+    user::{User, Users},
 };
-
-#[derive(Debug, Clone, Serialize)]
-struct Question {
-    index: i32,
-    kanji: Kanji,
-    is_solved: bool,
-}
 
 #[derive(Clone, Default)]
 pub struct GameState {
-    all_questions: Vec<Question>,
-    current_questions: Vec<Question>,
-    participants: Vec<User>,
+    questions: Questions,
+    participants: Users,
+    ranking: Vec<User>,
 }
 
 pub type SharedGameState = Arc<Mutex<GameState>>;
@@ -36,13 +33,6 @@ impl GameState {
     fn new() -> Self {
         GameState::default()
     }
-
-    fn judge(&self, question_id: usize, kanji_id: u32) -> bool {
-        self.current_questions
-            .get(question_id)
-            .map(|v| v.kanji.id == kanji_id)
-            .unwrap_or(false)
-    }
 }
 
 #[tokio::main]
@@ -50,8 +40,13 @@ async fn main() {
     let app_state = GameState::new();
     let app_state = Arc::new(Mutex::new(app_state));
 
+    let app_state_cloned = Arc::clone(&app_state);
+    tokio::spawn(update_question_remaining_time(app_state_cloned));
+
     let app = Router::new()
-        .route("/", post(receive_answer))
+        .route("/register_ranking", post(register_ranking))
+        .route("/user", post(create_user))
+        .route("/answer", post(receive_answer))
         .route("/websocket", get(websocket_handler))
         .with_state(app_state);
 
@@ -69,4 +64,24 @@ async fn websocket_handler(
 
 async fn websocket(mut stream: WebSocket, game_state: SharedGameState) {
     handle_screen(&mut stream, game_state).await.unwrap();
+}
+
+async fn update_question_remaining_time(app_state: SharedGameState) {
+    const UPDATE_INTERVAL: Duration = Duration::from_millis(33);
+
+    let mut interval = interval(UPDATE_INTERVAL);
+
+    loop {
+        interval.tick().await;
+
+        let mut state = app_state.lock().await;
+        let questions = &mut state.questions;
+
+        questions.decrease_remaining_time(UPDATE_INTERVAL);
+
+        if questions.is_remaining_time_zero() {
+            questions.reset();
+            questions.reset_time();
+        }
+    }
 }
