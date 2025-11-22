@@ -63,7 +63,7 @@ async fn main() {
         .allow_credentials(true);
 
     let app = Router::new()
-        .route("/register_ranking", post(register_ranking))
+        .route("/ranking", post(register_ranking))
         .route("/user", post(create_user))
         .route("/answer", post(receive_answer))
         .route("/websocket", get(websocket_handler))

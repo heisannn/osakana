@@ -22,7 +22,7 @@ export async function registerRanking(formData: FormData) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username: name, id: userId }),
+      body: JSON.stringify({ username: name, user_id: userId }),
     });
 
     if (!res.ok) {

@@ -30,7 +30,7 @@ export async function GET() {
   cookieStore.set("user_id", user_id, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    maxAge: 60 * 3,
+    maxAge: 60 * 60 * 24,
   });
 
   if (!cookieStore.get("user_id")) {
