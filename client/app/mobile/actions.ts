@@ -3,13 +3,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export async function clearUserCookies() {
-  const cookieStore = await cookies();
-  cookieStore.delete("user_id");
-  cookieStore.delete("user_number");
-  redirect("/mobile?error=cookies_cleared");
-}
-
 export async function postUserNameToServer(formData: FormData) {
   const name = formData.get("input") as string;
 
@@ -27,10 +20,10 @@ export async function postUserNameToServer(formData: FormData) {
   console.log(`Posted Name to Server: ${name} for User ID: ${userId}`);
 }
 
-export async function sendAnswerToServer(nfcId: string) {
+export async function sendAnswerToServer(unicode: string) {
   const cookieStore = await cookies();
   const userIDCookie = cookieStore.get("user_id");
-  const userNumberCookie = cookieStore.get("user_number");
+  const userNumberCookie = cookieStore.get("answer_number");
 
   if (!userIDCookie || !userNumberCookie) {
     console.error("[サーバー] Cookieが見つかりません。");
@@ -38,7 +31,7 @@ export async function sendAnswerToServer(nfcId: string) {
   }
 
   const combinedData = {
-    nfcId: nfcId,
+    unicode: unicode,
     userId: userIDCookie.value,
     userNumber: userNumberCookie.value,
   };
@@ -63,13 +56,20 @@ export async function registerUser() {
 
   // ToDo : Httpリクエスト
   // レスポンスからUUIDを取得する想定
-  const uuid = "response dummy";
+  const uuid = "dummy-uuid-1234";
+  if (!uuid) {
+    redirect("/mobile/?error=registration_failed");
+  }
 
   cookieStore.set("user_id", uuid, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 3,
   });
+  if (!cookieStore.get("user_id")) {
+    console.error("Failed to set user_id cookie");
+    throw new Error("Failed to set cookie");
+  }
 
   console.log(`Registered User: ${uuid}`);
 }
@@ -83,7 +83,7 @@ export async function saveNumberToCookie(formData: FormData) {
 
   const cookieStore = await cookies();
 
-  cookieStore.set("user_number", number, {
+  cookieStore.set("answer_number", number, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge: 60 * 120,

@@ -41,7 +41,7 @@ export function InputForm({ onSubmitAction, buttonText }: InputFormProps) {
     >
       <div>
         <label
-          htmlFor="string"
+          htmlFor="input"
           style={{ display: "block", marginBottom: "0.5rem" }}
         >
           {buttonText}
@@ -49,7 +49,7 @@ export function InputForm({ onSubmitAction, buttonText }: InputFormProps) {
         <input
           id="input"
           name="input"
-          type="string"
+          type="text"
           required
           style={{ width: "100%", padding: "8px" }}
         />

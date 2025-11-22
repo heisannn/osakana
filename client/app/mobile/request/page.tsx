@@ -8,11 +8,11 @@ type PageProps = {
 };
 
 export default async function ProcessPage({ searchParams }: PageProps) {
-  const { nfcId } = await loadSearchParams(searchParams);
+  const { unicode } = await loadSearchParams(searchParams);
 
   let apiResponse;
   try {
-    apiResponse = await sendAnswerToServer(nfcId);
+    apiResponse = await sendAnswerToServer(unicode);
   } catch (apiError) {
     console.error("[サーバー] APIリクエストに失敗しました:", apiError);
     redirect("/mobile/?error=api_failed");
@@ -21,5 +21,5 @@ export default async function ProcessPage({ searchParams }: PageProps) {
   console.log("[サーバー] 処理完了。メインページにリダイレクトします。");
   const isCorrect = apiResponse.result?.isCorrect ?? false;
   const combo = apiResponse.result?.combo ?? 0;
-  redirect(`/mobile/?result=${isCorrect},combo=${combo}`);
+  redirect(`/mobile/?result=${isCorrect}&combo=${combo}`);
 }
